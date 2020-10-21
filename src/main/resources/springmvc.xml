@@ -1,0 +1,59 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-3.2.xsd ">
+
+    <!--注解驱动，以使得访问路径与方法的匹配可以通过注解配置-->
+    <mvc:annotation-driven />
+    <!-- 配置注解扫描 -->
+    <context:component-scan base-package="controller,aspect,serviceImpl" />
+
+    <!-- 视图定位到/WEB/INF/jsp 这个目录下 -->
+    <bean id="InternalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 前缀 -->
+        <property name="prefix" value="/WEB-INF/jsp/" />
+        <!-- 后缀 -->
+        <property name="suffix" value=".jsp" />
+    </bean>
+
+    <!-- 捕获异常 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <!-- 定义默认的异常处理页面,只要你的代码报了异常，会自动跳转到该默认页面, error是error.jsp的前缀，只需要写前缀名即可,
+        如果当前页面和error在用一目录，value的值为:/error即可,
+        如果当前页面和error页面是叔侄关系,假如当前页面在WEB-INFO/jsp/my.jsp, error在WEB-INF/error,则value的值为../error -->
+        <property name="defaultErrorView" value="error"/>
+        <!-- 定义异常处理页面用来获取异常信息的变量名，也可不定义，默认名为exception,
+        当程序报异常并且跳转到异常页面，在error页面使用${ex}即可获取异常信息
+        指定value的值后,对默认的和自定义异常都可以使用,使用${ex}获取异常信息-->
+        <property name="exceptionAttribute" value="ex"/>
+    </bean>
+
+    <!-- 拦截器 -->
+<!--    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/*"/>
+            &lt;!&ndash;<mvc:exclude-mapping path="/hello"/>&ndash;&gt;
+            <bean id="MyInterceptor1" class="interceptor.MyInterceptor"></bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/*"/>
+            <bean id="MyInterceptor2" class="interceptor.MyInterceptor2"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>-->
+
+    <!-- 启动AspectJ自动代理 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+</beans>
